@@ -14,11 +14,18 @@
 #define Vref 3.3	
 #define UNIPOLAR 0x00  				// Two-Quadrant  Multiplying Mode,  Vout = (0V to -Vref) or (0V to +Vref) , depend on the circuit design
 #define BIPOLAR  0x01					// Four-Quadrant Multiplying Mode, Vout = -Vref to + Vref
-#define AD_Quadrant BIPOLAR		// Default Quadrant Mode
+#define AD_QUADRANT BIPOLAR		// Default Quadrant Mode
 
-#define AD5556_BinaryAddr_limit pow(2,(16-AD_Quadrant))-1	 // AD5556_BinaryAddr_limit
-#define AD5556_BinaryBase_Addr  AD_Quadrant * ( 1<<15 )		 // D in Binary when Vout = 0v
+#define AD5556_BINARYADDR_LIMIT pow(2,(16-AD_QUADRANT))-1	 // AD5556_BinaryAddr_limit
+#define AD5556_BINARYBASE_ADDR AD_QUADRANT * ( 1<<15 )		 // D in Binary when Vout = 0v
 
+/************************Usart Data Nask******************************/
+#define COEFFICIENT 0x01
+#define IN_PHASE_MASK 0x01
+#define REVERSE_PHASE_MASK 0x02
+#define RESERVE_MASK 0x00
+#define CHANNEL1_MASK 0x01
+#define CHANNEL2_MASK 0x02
 /**
 * @function : AD_write
 * @brief Write data to AD5556
