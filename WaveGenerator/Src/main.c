@@ -45,8 +45,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-#include "sinwave.h"
-#include "ad5556.h"
+#include "ad5546.h"
 #include "string.h"
 /* USER CODE END Includes */
 
@@ -87,7 +86,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	SineWave_Init();
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -221,9 +220,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		return;
 	}else{
 		if(RxBuffer[1] & IN_PHASE_MASK){
-			// todo
+			// todo nothing
 		}else if(RxBuffer[1] & REVERSE_PHASE_MASK){
-			// todo
+			// todo nothing
 		} 
 		AD_data = RxBuffer[2] + (uint16_t)((RxBuffer[3] & 0x00FF)<<8);
 		if(RxBuffer[6] & CHANNEL1_MASK){

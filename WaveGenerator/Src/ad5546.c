@@ -1,11 +1,11 @@
 /*
- * @file       : AD5556.c
- * @brief      : AD5556 operation function
+ * @file       : AD5546.c
+ * @brief      : AD5546 operation function
  * @version    : V1.0
  * @date       : 2018-2-8
  * @author     :
 */
-#include "AD5556.h"
+#include "AD5546.h"
 #include "stdint.h"
 
 /**
@@ -80,7 +80,7 @@ static void AD_SET_DATA(uint16_t Data){
 }
 /**
 * @function : AD_write
-* @brief Write data to AD5556
+* @brief Write data to AD5546
 * @retval None
 */
 void AD_write(uint16_t Data){

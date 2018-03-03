@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 #include "math.h"
-#include "AD5556.h"
+#include "AD5546.h"
 
 #define PI  3.1415926
 
