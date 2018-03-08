@@ -18,7 +18,7 @@ static void SineWave_Data(uint16_t cycle ,uint16_t *waveData){
 	uint16_t i;
 	for( i=0;i<cycle;i++)
 	{
-		waveData[i]=(uint16_t)(sin((1.0 * i / (cycle - 1)) * 2 * PI) * (AD5546_BINARYADDR_LIMIT + 1) + AD5546_BINARYBASE_ADDR);
+		waveData[i]=(uint16_t)(sin((1.0 * i / (cycle - 1)) * 2 * PI) * (AD5556_BINARYADDR_LIMIT + 1) + AD5556_BINARYBASE_ADDR);
 	}
 }
 /**

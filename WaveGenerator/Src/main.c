@@ -45,7 +45,8 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-#include "ad5546.h"
+#include "sinwave.h"
+#include "ad5556.h"
 #include "string.h"
 /* USER CODE END Includes */
 
@@ -54,12 +55,13 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 uint8_t RxBuffer[8];
+__IO ITStatus UartReady = RESET;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_NVIC_Init(void);
-
+void AD_Data_Process(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -86,7 +88,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+	SineWave_Init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -102,35 +104,42 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
-  MX_IWDG_Init();
+  //MX_IWDG_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-	if(HAL_UART_Receive_IT(&huart1, (uint8_t *)RxBuffer, 8) != HAL_OK)
-  {
-    while(1)
-    {
-    }     
-  }
-
-  while (HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY)
-  {
-  } 
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-  /* USER CODE END WHILE */
-
-  /* USER CODE BEGIN 3 */
-
+		if(HAL_UART_Receive_IT(&huart1, (uint8_t *)RxBuffer, 8) != HAL_OK)
+		{
+		}
+		
+		while (UartReady != SET)
+		{
+		} 
+		UartReady = RESET;
+		
+		/*****************Send Msg To Usart*********************/
+		if(HAL_UART_Transmit_IT(&huart1, (uint8_t*)RxBuffer, 8)!= HAL_OK)
+		{
+		}
+		
+		while (UartReady != SET)
+		{
+		} 
+		UartReady = RESET;
+		/*****************Send Msg To Usart*********************/
+		AD_Data_Process();
+		memset(&RxBuffer,0,sizeof(uint8_t)*8);
   }
+	/* USER CODE BEGIN 3 */
+	
   /* USER CODE END 3 */
-
 }
 
 /**
@@ -211,18 +220,16 @@ static void MX_NVIC_Init(void)
   *                the configuration information for the specified UART module.
   * @retval None
   */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void AD_Data_Process(void)
 {	
 	uint16_t AD_data = 0;
 	if(RxBuffer[0] != COEFFICIENT){
-		memset(&RxBuffer,0,sizeof(uint8_t)*8);
-		HAL_UART_Receive_IT(&huart1,(uint8_t *)RxBuffer,8);
 		return;
 	}else{
 		if(RxBuffer[1] & IN_PHASE_MASK){
-			// todo nothing
+			// todo
 		}else if(RxBuffer[1] & REVERSE_PHASE_MASK){
-			// todo nothing
+			// todo
 		} 
 		AD_data = RxBuffer[2] + (uint16_t)((RxBuffer[3] & 0x00FF)<<8);
 		if(RxBuffer[6] & CHANNEL1_MASK){
@@ -231,9 +238,32 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			// change channel 2
 		}
 		AD_write(AD_data);
-		memset(&RxBuffer,0,sizeof(uint8_t)*8);
-		HAL_UART_Receive_IT(&huart1,(uint8_t *)RxBuffer,8);
 	}			
+}
+/**
+  * @brief  Tx Transfer completed callback
+  * @param  UartHandle: UART handle. 
+  * @note   This example shows a simple way to report end of IT Tx transfer, and 
+  *         you can add your own implementation. 
+  * @retval None
+  */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
+{
+  /* Set transmission flag: transfer complete */
+  UartReady = SET;
+}
+
+/**
+  * @brief  Rx Transfer completed callback
+  * @param  UartHandle: UART handle
+  * @note   This example shows a simple way to report end of DMA Rx transfer, and 
+  *         you can add your own implementation.
+  * @retval None
+  */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+{
+  /* Set transmission flag: transfer complete */
+  UartReady = SET;
 }
 /* USER CODE END 4 */
 

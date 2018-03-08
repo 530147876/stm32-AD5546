@@ -1,0 +1,39 @@
+
+T134C 000:495 SEGGER J-Link V5.12f Log File (0000ms, 0271ms total)
+T134C 000:495 DLL Compiled: May 17 2016 16:03:35 (0000ms, 0271ms total)
+T134C 000:495 Logging started @ 2018-03-07 10:35 (0000ms, 0271ms total)
+T134C 000:495 JLINK_SetWarnOutHandler(...) (0000ms, 0271ms total)
+T134C 000:495 JLINK_OpenEx(...)
+Firmware: J-Link V9 compiled Dec  1 2017 14:40:21
+Hardware: V9.20
+S/N: 59821029
+Feature(s): RDI, FlashBP, FlashDL, JFlash, GDB  returns O.K. (0269ms, 0540ms total)
+T134C 000:764 JLINK_SetErrorOutHandler(...) (0000ms, 0540ms total)
+T134C 000:764 JLINK_ExecCommand("ProjectFile = "D:\repo\STM32-cube\stm32+AD5546\WaveGenerator\MDK-ARM\JLinkSettings.ini"", ...)  returns 0x00 (0001ms, 0541ms total)
+T134C 000:765 JLINK_ExecCommand("Device = STM32F103CB", ...)Device "STM32F103CB" selected.  returns 0x00 (0000ms, 0541ms total)
+T134C 000:765 JLINK_ExecCommand("DisableConnectionTimeout", ...)  returns 0x01 (0000ms, 0541ms total)
+T134C 000:765 JLINK_GetHardwareVersion()  returns 0x16760 (0000ms, 0541ms total)
+T134C 000:765 JLINK_GetDLLVersion()  returns 51206 (0000ms, 0541ms total)
+T134C 000:765 JLINK_GetFirmwareString(...) (0000ms, 0541ms total)
+T134C 000:765 JLINK_GetDLLVersion()  returns 51206 (0000ms, 0541ms total)
+T134C 000:765 JLINK_GetCompileDateTime() (0000ms, 0541ms total)
+T134C 000:765 JLINK_GetFirmwareString(...) (0000ms, 0541ms total)
+T134C 000:765 JLINK_GetHardwareVersion()  returns 0x16760 (0000ms, 0541ms total)
+T134C 000:765 JLINK_TIF_Select(JLINKARM_TIF_JTAG)  returns 0x00 (0001ms, 0542ms total)
+T134C 000:766 JLINK_SetSpeed(5000) (0000ms, 0542ms total)
+T134C 000:766 JLINK_SetResetType(JLINKARM_RESET_TYPE_NORMAL)  returns JLINKARM_RESET_TYPE_NORMAL (0000ms, 0542ms total)
+T134C 000:766 JLINK_Reset() >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>STM32 (connect): Can not attach to CPU. Trying connect under reset. >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>
+  ***** Error: STM32: Connecting to CPU via connect under reset failed. >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>STM32 (connect): Can not attach to CPU. Trying connect under reset. >0x2F8 JTAG>
+TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>
+  ***** Error: STM32: Connecting to CPU via connect under reset failed.JLINK_GetIdData(...) >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>STM32 (connect): Can not attach to CPU. Trying connect under reset. >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>
+  ***** Error: STM32: Connecting to CPU via connect under reset failed. >0x2F8 JTAG>
+TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>STM32 (connect): Can not attach to CPU. Trying connect under reset. >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>
+  ***** Error: STM32: Connecting to CPU via connect under reset failed. (0270ms, 1082ms total)
+T134C 001:306 JLINK_GetIdData(...) >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>STM32 (connect): Can not attach to CPU. Trying connect under reset. >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>
+  ***** Error: STM32: Connecting to CPU via connect under reset failed. >0x2F8 JTAG>TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>STM32 (connect): Can not attach to CPU. Trying connect under reset. >0x2F8 JTAG>
+TotalIRLen = ?, IRPrint = 0x..000000000000000000000000 >0xC8 JTAG>
+  ***** Error: STM32: Connecting to CPU via connect under reset failed. (0271ms, 1353ms total)
+T134C 001:581 JLINK_GetFirmwareString(...) (0000ms, 1353ms total)
+T134C 023:504 JLINK_Close() (0000ms, 1353ms total)
+T134C 023:504  (0000ms, 1353ms total)
+T134C 023:504 Closed (0000ms, 1353ms total)
