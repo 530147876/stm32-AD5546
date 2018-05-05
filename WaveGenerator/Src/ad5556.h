@@ -11,14 +11,7 @@
 #include "math.h"
 #include "stm32f1xx_hal.h"
 
-#define Vref 3.3	
-#define UNIPOLAR 0x00  				// Two-Quadrant  Multiplying Mode,  Vout = (0V to -Vref) or (0V to +Vref) , depend on the circuit design
-#define BIPOLAR  0x01					// Four-Quadrant Multiplying Mode, Vout = -Vref to + Vref
-#define AD_QUADRANT BIPOLAR		// Default Quadrant Mode
-
-#define AD5556_BINARYADDR_LIMIT pow(2,(16-AD_QUADRANT))-1	 // AD5556_BinaryAddr_limit
-#define AD5556_BINARYBASE_ADDR AD_QUADRANT * ( 1<<15 )		 // D in Binary when Vout = 0v
-
+#define BIT_8_MASK 0x00FF
 /************************Usart Data Nask******************************/
 #define COEFFICIENT 0x01
 #define IN_PHASE_MASK 0x01
@@ -27,10 +20,24 @@
 #define CHANNEL1_MASK 0x01
 #define CHANNEL2_MASK 0x02
 /**
-* @function : AD_write
+* @function : AD_WRITE
 * @brief Write data to AD5556
 * @retval None
 */
-void AD_write(uint16_t Data);
+void AD_WRITE(uint16_t Data);
+/**
+* @function : REVERSE_DELAY
+* @brief Delay after pin reverse,
+* @retval None
+*/
+void REVERSE_DELAY(void);
+void AD_RESET_WR(void);
+void AD_SET_WR(void);
+void AD_SET_LDAC(void);
+void AD_RESET_LDAC(void);
+void AD_RESET_RS(void);
+void AD_SET_RS(void);
+void AD_SET_DATA(uint16_t Data);
+
 
 #endif

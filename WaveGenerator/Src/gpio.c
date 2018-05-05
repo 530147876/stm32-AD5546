@@ -68,44 +68,35 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, D0_Pin|D1_Pin|D2_Pin|D3_Pin|D4_Pin 
-                          |D5_Pin|D6_Pin|D7_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, D0_Pin|D1_Pin|D2_Pin|D3_Pin 
+                          |D4_Pin|D5_Pin|D6_Pin|D7_Pin 
+                          |D8_Pin|D9_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, D8_Pin|D9_Pin|D10_Pin|D11_Pin 
-                          |D12_Pin|D13_Pin|D14_Pin|D15_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, D10_Pin|D11_Pin|D12_Pin|D13_Pin 
+                          |D14_Pin|D15_Pin|LDAC_1_Pin|MSB_1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  //HAL_GPIO_WritePin(GPIOB, WR_Pin|RS_Pin|MSB_Pin, GPIO_PIN_RESET);
-	
-	/* USER CODE BEGIN  */
-	HAL_GPIO_WritePin(GPIOA, LDAC_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOB, WR_Pin,   GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB, RS_Pin,   GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOB, MSB_Pin,  GPIO_PIN_RESET);
-	/* USER CODE END */
-  
-	/*Configure GPIO pins : PAPin PAPin PAPin PAPin 
-                           PAPin PAPin PAPin PAPin */
-  GPIO_InitStruct.Pin = D0_Pin|D1_Pin|D2_Pin|D3_Pin|D4_Pin 
-                          |D5_Pin|D6_Pin|D7_Pin|LDAC_Pin;
+  HAL_GPIO_WritePin(GPIOB, RS_N_1_Pin|WR_N_1_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pins : PAPin PAPin PAPin PAPin 
+                           PAPin PAPin PAPin PAPin 
+                           PAPin PAPin */
+  GPIO_InitStruct.Pin = D0_Pin|D1_Pin|D2_Pin|D3_Pin 
+                          |D4_Pin|D5_Pin|D6_Pin|D7_Pin 
+                          |D8_Pin|D9_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin 
                            PBPin PBPin PBPin PBPin 
-                           PBPin */
-  GPIO_InitStruct.Pin = D8_Pin|D9_Pin|D10_Pin|D11_Pin 
-                          |D12_Pin|D13_Pin|D14_Pin|D15_Pin;
+                           PBPin PBPin */
+  GPIO_InitStruct.Pin = D10_Pin|D11_Pin|RS_N_1_Pin|D12_Pin 
+                          |D13_Pin|D14_Pin|D15_Pin|LDAC_1_Pin 
+                          |WR_N_1_Pin|MSB_1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = WR_Pin|RS_Pin|MSB_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }

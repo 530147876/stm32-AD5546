@@ -38,7 +38,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_hal.h"
-#include "dma.h"
 #include "iwdg.h"
 #include "tim.h"
 #include "usart.h"
@@ -50,12 +49,16 @@
 #include "string.h"
 /* USER CODE END Includes */
 
-/* Private variables ---------------------------------------------------------*/
+/* Private define ---------------------------------------------------------*/
+
+#define MASTER_DEVICE 1
+//#define SLAVE_DEVICE 1
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 uint8_t RxBuffer[8];
 __IO ITStatus UartReady = RESET;
+__IO ITStatus Uart2Ready = RESET;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,7 +91,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	SineWave_Init();
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -100,19 +103,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_TIM1_Init();
-  MX_TIM2_Init();
+  MX_IWDG_Init();
   MX_USART1_UART_Init();
-  //MX_IWDG_Init();
+  MX_USART2_UART_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-  
+  REVERSE_DELAY();
+	
+	AD_SET_RS();
+	AD_RESET_LDAC();
+	AD_SET_WR();
   /* USER CODE END 2 */
 
   /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
   while (1)
   {
 		if(HAL_UART_Receive_IT(&huart1, (uint8_t *)RxBuffer, 8) != HAL_OK)
@@ -123,23 +130,27 @@ int main(void)
 		{
 		} 
 		UartReady = RESET;
-		
-		/*****************Send Msg To Usart*********************/
-		if(HAL_UART_Transmit_IT(&huart1, (uint8_t*)RxBuffer, 8)!= HAL_OK)
+#ifdef MASTER_DEVICE
+		/*****************Send Msg To Usart2*********************/
+		if(HAL_UART_Transmit_IT(&huart2, (uint8_t*)RxBuffer, 8)!= HAL_OK)
 		{
 		}
 		
-		while (UartReady != SET)
+		while (Uart2Ready != SET)
 		{
 		} 
-		UartReady = RESET;
-		/*****************Send Msg To Usart*********************/
+		Uart2Ready = RESET;
+		/*****************Send Msg To Usart2*********************/
+#endif
 		AD_Data_Process();
 		memset(&RxBuffer,0,sizeof(uint8_t)*8);
   }
-	/* USER CODE BEGIN 3 */
+  /* USER CODE END WHILE */
+
+  /* USER CODE BEGIN 3 */
 	
   /* USER CODE END 3 */
+
 }
 
 /**
@@ -199,18 +210,15 @@ void SystemClock_Config(void)
   */
 static void MX_NVIC_Init(void)
 {
-  /* DMA1_Channel5_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 2, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
   /* TIM1_BRK_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(TIM1_BRK_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(TIM1_BRK_IRQn);
-  /* TIM2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);
-  HAL_NVIC_EnableIRQ(TIM2_IRQn);
   /* USART1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(USART1_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
+  /* USART2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USART2_IRQn);
 }
 
 /* USER CODE BEGIN 4 */
@@ -223,21 +231,43 @@ static void MX_NVIC_Init(void)
 void AD_Data_Process(void)
 {	
 	uint16_t AD_data = 0;
-	if(RxBuffer[0] != COEFFICIENT){
-		return;
-	}else{
-		if(RxBuffer[1] & IN_PHASE_MASK){
+	if(RxBuffer[0] != COEFFICIENT)
+	{
+		// ERROR PROCESS
+	}
+	else
+	{
+		if(RxBuffer[1] & IN_PHASE_MASK)
+		{
 			// todo
-		}else if(RxBuffer[1] & REVERSE_PHASE_MASK){
+		}
+		else if(RxBuffer[1] & REVERSE_PHASE_MASK)
+		{
 			// todo
 		} 
-		AD_data = RxBuffer[2] + (uint16_t)((RxBuffer[3] & 0x00FF)<<8);
-		if(RxBuffer[6] & CHANNEL1_MASK){
-			// change channel 1
-		}else if(RxBuffer[6] & CHANNEL2_MASK){
-			// change channel 2
+		else
+		{
+			// todo
 		}
-		AD_write(AD_data);
+		
+		AD_data = RxBuffer[2] + (uint16_t)((RxBuffer[3] & BIT_8_MASK)<<8);
+		
+		if(RxBuffer[6] & CHANNEL1_MASK)
+		{
+#ifdef MASTER_DEVICE
+			AD_WRITE(AD_data);
+#endif
+		}
+		else if(RxBuffer[6] & CHANNEL2_MASK)
+		{
+#ifdef SLAVE_DEVICE
+			AD_WRITE(AD_data);
+#endif
+		}
+		else
+		{
+			// ERROR PROCESS
+		}
 	}			
 }
 /**
@@ -250,7 +280,18 @@ void AD_Data_Process(void)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
   /* Set transmission flag: transfer complete */
-  UartReady = SET;
+	if(UartHandle->Instance == USART1)
+	{
+		UartReady = SET;
+	}
+  else if (UartHandle->Instance == USART2)
+	{
+		Uart2Ready = SET;
+	}
+	else
+	{
+		// ERROR USART
+	}
 }
 
 /**
@@ -263,7 +304,18 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
   /* Set transmission flag: transfer complete */
-  UartReady = SET;
+	if(UartHandle->Instance == USART1)
+	{
+		UartReady = SET;
+	}
+  else if (UartHandle->Instance == USART2)
+	{
+		Uart2Ready = SET;
+	}
+	else
+	{
+		// ERROR USART
+	}
 }
 /* USER CODE END 4 */
 

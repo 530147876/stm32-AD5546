@@ -13,8 +13,9 @@
   * @brief Delay after pin reverse,
   * @retval None
   */
-static void reverse_delay(void){
-	__nop();__nop();__nop();
+void REVERSE_DELAY(void)
+{
+	__nop();__nop();__nop();__nop();__nop();
 	// 3 * (1/72Mhz) = 41.7ns 
 } 
 /**
@@ -22,36 +23,42 @@ static void reverse_delay(void){
   * @brief WR Pin Reset (active low)
   * @retval None
   */
-static void AD_RESET_WR(void){
-	HAL_GPIO_WritePin(WR_GPIO_Port,WR_Pin,GPIO_PIN_RESET);
+void AD_RESET_WR(void)
+{
+	HAL_GPIO_WritePin(WR_N_1_GPIO_Port,WR_N_1_Pin,GPIO_PIN_RESET);
 }
 
-static void AD_SET_WR(void){
-	HAL_GPIO_WritePin(WR_GPIO_Port,WR_Pin,GPIO_PIN_SET);
+void AD_SET_WR(void)
+{
+	HAL_GPIO_WritePin(WR_N_1_GPIO_Port,WR_N_1_Pin,GPIO_PIN_SET);
 }
 /**
 * @function : AD_SET_LDAC
 * @brief LDAC Pin Set (active high)
 * @retval None
 */
-static void AD_SET_LDAC(void){
-	HAL_GPIO_WritePin(LDAC_GPIO_Port,LDAC_Pin,GPIO_PIN_SET);
+void AD_SET_LDAC(void)
+{
+	HAL_GPIO_WritePin(LDAC_1_GPIO_Port,LDAC_1_Pin,GPIO_PIN_SET);
 }	
 
-static void AD_RESET_LDAC(void){
-	HAL_GPIO_WritePin(LDAC_GPIO_Port,LDAC_Pin,GPIO_PIN_RESET);
+void AD_RESET_LDAC(void)
+{
+	HAL_GPIO_WritePin(LDAC_1_GPIO_Port,LDAC_1_Pin,GPIO_PIN_RESET);
 }	
 /**
 * @function : AD_RESET_RS
 * @brief RS Pin Reset (active low)
 * @retval None
 */
-static void AD_RESET_RS(void){
-	HAL_GPIO_WritePin(RS_GPIO_Port,RS_Pin,GPIO_PIN_RESET);
+void AD_RESET_RS(void)
+{
+	HAL_GPIO_WritePin(RS_N_1_GPIO_Port,RS_N_1_Pin,GPIO_PIN_RESET);
 }	
 
-static void AD_SET_RS(void){
-	HAL_GPIO_WritePin(RS_GPIO_Port,RS_Pin,GPIO_PIN_SET);
+void AD_SET_RS(void)
+{
+	HAL_GPIO_WritePin(RS_N_1_GPIO_Port,RS_N_1_Pin,GPIO_PIN_SET);
 }	
 /**
 * @function : AD_SET_DATA
@@ -59,7 +66,8 @@ static void AD_SET_RS(void){
 * @para uint16_t Data :   
 * @retval None
 */
-static void AD_SET_DATA(uint16_t Data){
+void AD_SET_DATA(uint16_t Data)
+{
 	HAL_GPIO_WritePin(GPIOA,D0_Pin,(Data & (uint16_t)(1<<0)) >> 0);
 	HAL_GPIO_WritePin(GPIOA,D1_Pin,(Data & (uint16_t)(1<<1)) >> 1);
 	HAL_GPIO_WritePin(GPIOA,D2_Pin,(Data & (uint16_t)(1<<2)) >> 2);
@@ -67,8 +75,8 @@ static void AD_SET_DATA(uint16_t Data){
 	HAL_GPIO_WritePin(GPIOA,D4_Pin,(Data & (uint16_t)(1<<4)) >> 4);
 	HAL_GPIO_WritePin(GPIOA,D5_Pin,(Data & (uint16_t)(1<<5)) >> 5);
 	HAL_GPIO_WritePin(GPIOA,D6_Pin,(Data & (uint16_t)(1<<6)) >> 6);
-
-	HAL_GPIO_WritePin(GPIOB,D7_Pin,(Data & (uint16_t)(1<<7)) >> 7);
+	HAL_GPIO_WritePin(GPIOA,D7_Pin,(Data & (uint16_t)(1<<7)) >> 7);
+	
 	HAL_GPIO_WritePin(GPIOB,D8_Pin,(Data & (uint16_t)(1<<8)) >> 8);
 	HAL_GPIO_WritePin(GPIOB,D9_Pin,(Data & (uint16_t)(1<<9)) >> 9);
 	HAL_GPIO_WritePin(GPIOB,D10_Pin,(Data & (uint16_t)(1<<10)) >> 10);
@@ -83,17 +91,16 @@ static void AD_SET_DATA(uint16_t Data){
 * @brief Write data to AD5556
 * @retval None
 */
-void AD_write(uint16_t Data){
-	AD_RESET_WR();
+void AD_WRITE(uint16_t Data)
+{
 	AD_SET_DATA(Data);
-	reverse_delay();
+	AD_RESET_WR();
+	REVERSE_DELAY();
 	AD_SET_WR();
-	
+	REVERSE_DELAY();
 	AD_SET_LDAC();
-	reverse_delay();
+	REVERSE_DELAY();
 	AD_RESET_LDAC();
 	
-	AD_RESET_RS();
-	reverse_delay();
 	AD_SET_RS();
 }
